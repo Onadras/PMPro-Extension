@@ -1,4 +1,4 @@
-# PMPro-Extension
+# PMPro-Post-View-Limit
 
 Custom wordpress plugin to extend PMPro functionality in order to setup a post view based subscription system. Each subscription level should allow for a set number of post views. Once the users reach the view limit, they are redirected to the subscription plans page.
 
