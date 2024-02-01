@@ -10,7 +10,7 @@ The plugin currently extends PMPro with the following features:
 4. Work in tandem with the PMPro recipe open_new_posts_to_non_members in order to avoid conflicts and let users freely access all the newer posts without increasing their view count.
 5. Display a view counter on the frontend to let users keep track of their membership limit.
 
-The following explains the why and how of the main blocks of functions of the plugin
+The following part explains the main blocks of functions of the plugin.
 
 <strong>Add Views Field Function (custom_add_views_field):</strong>
 
