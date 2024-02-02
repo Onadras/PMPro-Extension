@@ -35,7 +35,7 @@ add_action( 'pmpro_save_membership_level', 'custom_save_views_field' );
 
 // Track post views and update the value in the user profile for selected posts and custom post types
 function custom_track_post_views() {
-    if ( is_single() && ! is_admin() && is_user_logged_in() ) {
+    if ( is_single() && ! is_admin() ) {
         $user_id = get_current_user_id();
         $post_views = get_user_meta( $user_id, 'custom_user_post_views', true );
 
@@ -53,28 +53,28 @@ function custom_track_post_views() {
             return;
         }
 		
-		// Check if the user has access to the current post
-        if ( ! pmpro_has_membership_access( $post_id, $user_id ) ) {
-            // Redirect the user to the subscription page if they don't have access
+		// Check if the user is logged in and has access to the current post
+        if ( is_user_logged_in() && pmpro_has_membership_access( $post_id, $user_id ) ) {
+            // The user is logged in and has access to the current post, so we continue tracking views
+
+            // User has reached the limit of allowed views
+            $membership_level = pmpro_getMembershipLevelForUser( $user_id );
+            $views_allowed = isset( $membership_level->id ) ? get_option( 'pmpro_custom_views_allowed_' . $membership_level->id ) : 0;
+            if ( $post_views >= $views_allowed ) {
+                // User has reached the limit of allowed views
+                $redirect_url = pmpro_url( 'levels' ); // URL of the PMPro subscription levels page
+                wp_redirect( $redirect_url );
+                exit;
+            }
+
+            // Increment the views counter only if the post was not published less than seven days ago
+            $post_views++;
+            update_user_meta( $user_id, 'custom_user_post_views', $post_views );
+        } else {
+            // Redirect the user to the subscription page if they are not logged in or don't have access
             wp_redirect( pmpro_url( 'levels' ) );
             exit;
-        }  
-
-        // The post was published more than seven days ago and is not a custom post type selected with the PMPro CPT Access extension, so we track views
-
-        // User has reached the limit of allowed views
-        $membership_level = pmpro_getMembershipLevelForUser( $user_id );
-        $views_allowed = isset( $membership_level->id ) ? get_option( 'pmpro_custom_views_allowed_' . $membership_level->id ) : 0;
-        if ( $post_views >= $views_allowed ) {
-            // User has reached the limit of allowed views
-            $redirect_url = pmpro_url( 'levels' ); // URL of the PMPro subscription levels page
-            wp_redirect( $redirect_url );
-            exit;
         }
-
-        // Increment the views counter only if the post was not published less than seven days ago
-        $post_views++;
-        update_user_meta( $user_id, 'custom_user_post_views', $post_views );
     }
 }
 add_action( 'template_redirect', 'custom_track_post_views' );
