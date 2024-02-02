@@ -23,7 +23,7 @@ function custom_add_views_field() {
 }
 add_action( 'pmpro_membership_level_after_other_settings', 'custom_add_views_field' );
 
-// Save the value of the number of allowed views during membership level save
+// Save the value of the number of allowed views in the database
 function custom_save_views_field( $level_id ) {
     if ( isset( $_REQUEST['views_allowed'] ) ) {
         $views_allowed = intval( $_REQUEST['views_allowed'] );
